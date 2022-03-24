@@ -1,5 +1,8 @@
-# Notes
-* Reference: [YOLOv1 from Scratch](https://www.youtube.com/watch?v=n9_XyCGr-MI)
+# Reference: 
+* [YOLOv1 from Scratch](https://www.youtube.com/watch?v=n9_XyCGr-MI)
+* [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640)
+
+# Information
 * Tool: Pytroch
 * Dataset: PASCAL VOC Dataset, 20 classes
 
@@ -36,3 +39,29 @@ Limitation: Note: A grid can only detect **ONE** object.
 ## Remember this is for every cell
 * Target shape for one image: `(S, S, 25)`
 * Prediction shape for one image: `(S, S, 30)`
+
+# Model Architecture
+* Spec for Input, Feature Map, and Output: `(Width, Height, Channel)`
+* Spec for Conv. Layer: `(Kernel_size, Kernel_size, Number_of_Kernel)-s-(Stride_size)`
+* Spec for Maxpool Layer: `(Pool_size, Pool_size)-s-(Stride_size)`
+* Input: `(448, 448, 3)`
+    * Conv. Layer: 7x7x64-s-2
+    * Maxpool Layer: 2x2-s-2 
+* Feature Map: `(112, 112, 192)`
+    * Conv. Layer: 3x3x192
+    * Maxpool Layer: 2x2-s-2
+* Feature Map: `(56, 56, 256)`
+    * Conv. Layer: 1x1x28, 3x3x256, 1x1x256, 3x3x256
+    * Maxpool Layer: 2x2-s-2
+* Feature Map: `(28, 28, 512)`
+    * Conv. Layer: {1x1x256, 3x3x512}x4, 1x1x512, 3x3x1024
+    * Maxpool Layer: 2x2-s-2
+* Feature Map: `(14, 14, 1024)`
+    * Conv. Layer: {1x1x512, 3x3x1024}x2, 3x3x1024, 3x3x1024-s-2
+* Feature Map: `(7, 7, 1024)`
+    * Conv. Layer: 3x3x1024, 3x3x1024
+* Feature Map: `(7, 7, 1024)`
+    * Conn. Layer
+* Feature Map: `(4096)`
+    * Conn. Layer
+* Output: `(7, 7, 30)`
