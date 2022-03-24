@@ -2,6 +2,11 @@
 * [YOLOv1 from Scratch](https://www.youtube.com/watch?v=n9_XyCGr-MI)
 * [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640)
 
+# Env
+* Python 3.8.12: `conda create -n "YOLOv1" python=3.8`
+* Pytorch 11.0: `conda install pytorch torchvision torchaudio cpuonly -c pytorch`
+
+
 # Information
 * Tool: Pytroch
 * Dataset: PASCAL VOC Dataset, 20 classes
@@ -51,7 +56,7 @@ Limitation: Note: A grid can only detect **ONE** object.
     * Conv. Layer: 3x3x192
     * Maxpool Layer: 2x2-s-2
 * Feature Map: `(56, 56, 256)`
-    * Conv. Layer: 1x1x28, 3x3x256, 1x1x256, 3x3x256
+    * Conv. Layer: 1x1x28, 3x3x256, 1x1x256, 3x3x512
     * Maxpool Layer: 2x2-s-2
 * Feature Map: `(28, 28, 512)`
     * Conv. Layer: {1x1x256, 3x3x512}x4, 1x1x512, 3x3x1024
