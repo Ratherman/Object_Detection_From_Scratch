@@ -30,20 +30,64 @@ class YoloLoss(nn.Module):
             best_box * predictions[..., 26:30] + (1-best_box) * predictions[..., 21:25]
         )
 
+        box_targets = exists_box * target[..., 21:25]
+
+        box_predictions[..., 2:4] = torch.sign(box_predictions[..., 2:4]) * torch.sqrt(
+            torch.abs(box_predictions[..., 2:4] + 1e-6)
+        )
+
+        # (N, S, S, 25)
+        box_targets[..., 2:4] = torch.sqrt(box_targets[..., 2:4])
+
+        box_loss = self.mse(
+            torch.flatten(box_predictions, end_dim=-2),
+            torch.flatten(box_targets, end_dim=-2)
+        )
+
         # =============== #
         # FOR OBJECT LOSS #
         # =============== #
 
+        pred_box = (
+            best_box * predictions[..., 25:26] + (1-best_box) * predictions[..., 20:21]
+        )
 
+        # (N * S * S)
+        object_loss = self.mse(
+            torch.flatten(exists_box * pred_box),
+            torch.flatten(exists_box * target[..., 20:21])
+        )
 
         # ================== #
         # FOR NO OBJECT LOSS #
         # ================== #
 
+        # (N, S, S, 1) --> (N, S * S)
+        no_object_loss = self.mse(
+            torch.flatten((1 - exists_box) * predictions[..., 20:21], start_dim = 1)
+            torch.flatten((1 - exists_box) * target[..., 20:21], start_dim = 1)
+        )
 
+        no_object_loss += self.mse(
+            torch.flatten((1 - exists_box) * predictions[..., 25:26], start_dim = 1)
+            torch.flatten((1 - exists_box) * target[..., 20:21], start_dim = 1)
+        )
 
         # ============== #
         # FOR CLASS LOSS #
         # ============== #
 
+        # (N, S, S, 20) --> (N * S * S, 20)
+        class_loss = self.mse(
+            torch.flatten(exists_box * predictions[..., :20], end_dim=-2),
+            torch.flatten(exists_box * target[..., :20], end_dim=-2),
+        )
 
+        loss = (
+            self.lambda_coord * box_loss # First two rows of loss in paper
+            + object_loss
+            + self.lambda_noobj * no_object_loss
+            + class_loss
+        )
+
+        return loss
