@@ -64,12 +64,12 @@ class YoloLoss(nn.Module):
 
         # (N, S, S, 1) --> (N, S * S)
         no_object_loss = self.mse(
-            torch.flatten((1 - exists_box) * predictions[..., 20:21], start_dim = 1)
+            torch.flatten((1 - exists_box) * predictions[..., 20:21], start_dim = 1),
             torch.flatten((1 - exists_box) * target[..., 20:21], start_dim = 1)
         )
 
         no_object_loss += self.mse(
-            torch.flatten((1 - exists_box) * predictions[..., 25:26], start_dim = 1)
+            torch.flatten((1 - exists_box) * predictions[..., 25:26], start_dim = 1),
             torch.flatten((1 - exists_box) * target[..., 20:21], start_dim = 1)
         )
 
