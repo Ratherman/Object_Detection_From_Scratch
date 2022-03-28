@@ -70,3 +70,20 @@ Limitation: Note: A grid can only detect **ONE** object.
 * Feature Map: `(4096)`
     * Conn. Layer
 * Output: `(7, 7, 30)`
+
+# Loss Function
+* Sum of Squared Errors
+* First loss term
+    * Box coordinates for mid points
+    * Identity function. Be 1, if there's a box in cell i and bbox j is responsible for outputing that bbox. By responsible, it means the highest IOU of any predictor in that grid cell.
+* Second Loss Term
+    * Width and height
+    * Use squared root because we want to treat smaller bbox the same as larger bbox.
+* Third Loss Term
+    * Possibilities of objects
+* Forth Loss Term
+    * Which is responsible?
+    * The video maker thinks use both of the bbox.
+* Fifth Loss Term
+    * Classes
+    * Instead of using MSE, rather using Cross Entropy Error
